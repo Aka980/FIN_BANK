@@ -1,0 +1,100 @@
+<div class="portal-layout">
+
+  <!-- GLOBAL TOP HEADER -->
+  <header class="global-top-header">
+    <div class="header-brand-section">
+      <button class="hamburger-toggle" (click)="toggleSidebar()" aria-label="Toggle Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <div class="brand">
+        <span class="logo">🏦</span>
+        <span class="title">FinBank</span>
+      </div>
+    </div>
+
+    <!-- In-Page Navigation (Matching Dashboard) -->
+    <nav class="global-nav hidden-mobile">
+      <a href="/dashboard#overview">Overview</a>
+      <a href="/dashboard#vehicles">Vehicle Types</a>
+      <a href="/dashboard#features">Features &amp; Benefits</a>
+      <a routerLink="/emi-calculator">EMI Calculator</a>
+      <a routerLink="/loans/products">Apply Loan</a>
+    </nav>
+
+    <!-- Profile & Actions -->
+    <div class="header-actions">
+      <div class="account-badge" routerLink="/profile" title="View Profile">
+        <div class="acc-text">
+          <span class="label">ACCOUNT NO.</span>
+          <span class="val">{{customer?.accountNo || '-----'}}</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN BODY (Sidebar + Content) -->
+  <div class="main-body-wrapper">
+
+    <!-- Sidebar (Matching Dashboard) -->
+    <aside class="sidebar" [class.closed]="!sidebarOpen">
+      <div class="welcome-banner">
+        Welcome back, <br /><strong>{{ customer?.customerName || customer?.username || 'User' }} 👋</strong>
+      </div>
+      <nav class="menu">
+        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Dashboard
+        </a>
+        <a routerLink="/profile" routerLinkActive="active">My Profile
+        </a>
+        <a routerLink="/loans/products" routerLinkActive="active">Apply Loan
+        </a>
+        <a routerLink="/loans/history" routerLinkActive="active">Loan History
+        </a>
+        <a routerLink="/emi-calculator" routerLinkActive="active">EMI Calculator
+        </a>
+        <a routerLink="/emi-center" routerLinkActive="active">EMI Payments
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <a (click)="logout()" class="logout-btn">
+          🚪 Logout
+        </a>
+      </div>
+    </aside>
+
+    <!-- Scrollable Content Area -->
+    <div class="content-wrapper">
+      <!-- Breadcrumbs Component (Inline for now) -->
+      <nav class="breadcrumb-nav">
+        <ul>
+        </ul>
+      </nav>
+
+      <main class="content-scroll">
+        <router-outlet></router-outlet>
+      </main>
+
+      <!-- Footer -->
+      <footer class="portal-footer dark-slate">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <span class="logo">🏦</span>
+            <span class="text">FinBank Corporate Financing</span>
+          </div>
+          <p>&copy; 2026 FinBank. All rights reserved.</p>
+        </div>
+        <div class="footer-links">
+          <a>Terms &amp; Conditions</a>
+          <a>Privacy Policy</a>
+          <a>Contact Support</a>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+
+</div>

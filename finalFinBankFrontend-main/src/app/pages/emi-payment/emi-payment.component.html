@@ -1,0 +1,38 @@
+<section class="emi-payment-page">
+  <article class="payment-card">
+    <h3>Payment Details</h3>
+
+    <div class="amount-shell">
+      <span>Payable Amount</span>
+      <strong>&#8377; {{ amount | number:'1.0-0' }}</strong>
+    </div>
+
+    <p class="method-label">Select Payment Method</p>
+    <div class="method-grid">
+      <button
+        type="button"
+        class="method-btn"
+        *ngFor="let method of paymentMethods"
+        [class.active]="selectedMethod === method.value"
+        (click)="selectMethod(method.value)">
+        <span class="method-title">{{ method.label }}</span>
+        <span class="method-subtitle">{{ method.subtitle }}</span>
+      </button>
+    </div>
+
+    <p class="security-note">
+      Your payment is secured with industry-standard encryption.
+    </p>
+
+    <div class="action-row">
+      <button type="button" class="cancel-btn" (click)="backToEmiCenter()" [disabled]="processing">
+        Cancel
+      </button>
+      <button type="button" class="proceed-btn" (click)="proceedToPay()" [disabled]="processing">
+        {{ processing ? 'Processing...' : ('Proceed to Pay ₹ ' + (amount | number:'1.0-0')) }}
+      </button>
+    </div>
+
+    <div class="error-banner" *ngIf="errorMessage">{{ errorMessage }}</div>
+  </article>
+</section>

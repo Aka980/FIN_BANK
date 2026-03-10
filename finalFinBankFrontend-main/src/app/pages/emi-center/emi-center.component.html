@@ -1,0 +1,117 @@
+<section class="emi-center-page">
+  <header class="page-header">
+    <h2>EMI Payments</h2>
+    <p>Pay your monthly EMI and track next due date and outstanding amount.</p>
+  </header>
+
+  <div class="status-banner info" *ngIf="loadingLoans">Loading your loans...</div>
+  <div class="status-banner success" *ngIf="successMessage">{{ successMessage }}</div>
+  <div class="status-banner info" *ngIf="infoMessage">{{ infoMessage }}</div>
+  <div class="status-banner error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <section class="loan-select-card">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="loanSelector">Select Loan</label>
+        <select id="loanSelector" [ngModel]="selectedLoanId" (ngModelChange)="onLoanChange($event)"
+          [disabled]="loadingLoans || loans.length === 0">
+          <option [ngValue]="null" disabled>Select your loan</option>
+          <option *ngFor="let loan of loans" [ngValue]="loan.applicationNo">
+            Loan #{{ loan.applicationNo }} | {{ loan.loanType }} | {{ loan.status }}
+          </option>
+        </select>
+      </div>
+
+      <button type="button" class="refresh-btn" (click)="refresh()"
+        [disabled]="selectedLoanId === null || loadingEmiData || generatingEmiPlan">
+        {{ loadingEmiData ? 'Refreshing...' : 'Refresh EMI Data' }}
+      </button>
+    </div>
+  </section>
+
+  <section class="plan-card" *ngIf="needsEmiPlan && selectedLoanId !== null">
+    <h3>EMI plan not found</h3>
+    <p>Generate EMI plan for this loan to start payments and view dues.</p>
+    <button type="button" class="generate-btn" (click)="initializeEmiPlan()" [disabled]="generatingEmiPlan">
+      {{ generatingEmiPlan ? 'Generating...' : 'Generate EMI Plan' }}
+    </button>
+  </section>
+
+  <div class="emi-grid" *ngIf="!needsEmiPlan && selectedLoanId !== null">
+    <section class="summary-card">
+      <h3>Loan EMI Summary</h3>
+
+      <div class="summary-item">
+        <span>Outstanding</span>
+        <strong>&#8377; {{ (outstanding?.remainingAmount || 0) | number:'1.0-2' }}</strong>
+      </div>
+
+      <div class="summary-item">
+        <span>Monthly EMI</span>
+        <strong>&#8377; {{ (outstanding?.monthlyEmi || nextDue?.emiAmount || 0) | number:'1.0-2' }}</strong>
+      </div>
+
+      <div class="summary-item">
+        <span>Next Due Date</span>
+        <strong>{{ nextDue?.nextDueDate ? (nextDue?.nextDueDate | date:'mediumDate') : '-' }}</strong>
+      </div>
+
+      <div class="summary-item">
+        <span>Remaining EMIs</span>
+        <strong>{{ nextDue?.remainingEmis ?? '-' }}</strong>
+      </div>
+
+      <div class="summary-item" *ngIf="nextDue?.loanClosed">
+        <span>Loan Status</span>
+        <strong class="closed">Closed</strong>
+      </div>
+    </section>
+
+    <section class="payment-card">
+      <h3>Proceed to Payment</h3>
+      <p class="payment-note">Continue to secure checkout to choose your payment method.</p>
+
+      <div class="summary-item">
+        <span>Payable EMI</span>
+        <strong>&#8377; {{ (payableAmount || 0) | number:'1.0-2' }}</strong>
+      </div>
+
+      <div class="summary-item">
+        <span>Payment Date</span>
+        <strong>{{ today | date:'mediumDate' }}</strong>
+      </div>
+
+      <button type="button" class="pay-btn" (click)="goToPaymentPage()"
+        [disabled]="loadingEmiData || needsEmiPlan || payableAmount <= 0">
+        Pay EMI
+      </button>
+    </section>
+  </div>
+
+  <section class="history-card" *ngIf="!needsEmiPlan && selectedLoanId !== null">
+    <h3>Payment History</h3>
+
+    <div class="empty" *ngIf="paymentHistory.length === 0">
+      No EMI payments recorded yet.
+    </div>
+
+    <div class="table-wrap" *ngIf="paymentHistory.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Payment ID</th>
+            <th>Date</th>
+            <th>Amount Paid</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let payment of paymentHistory">
+            <td>#{{ payment.paymentId }}</td>
+            <td>{{ payment.paymentDate | date:'mediumDate' }}</td>
+            <td>&#8377; {{ payment.amountPaid | number:'1.0-2' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>

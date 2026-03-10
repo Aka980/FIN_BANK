@@ -1,0 +1,234 @@
+<div class="portal-layout">
+
+  <!-- GLOBAL TOP HEADER -->
+  <header class="global-top-header">
+    <div class="header-brand-section">
+      <button class="hamburger-toggle" (click)="toggleSidebar()" aria-label="Toggle Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <div class="brand">
+        <span class="logo">🏦</span>
+        <span class="title">FinBank</span>
+      </div>
+    </div>
+
+    <!-- In-Page Navigation -->
+    <nav class="global-nav hidden-mobile">
+      <a href="/dashboard#overview">Overview</a>
+      <a href="/dashboard#vehicles">Vehicle Types</a>
+      <a href="/dashboard#features">Features &amp; Benefits</a>
+      <a routerLink="/emi-calculator">EMI Calculator</a>
+      <a routerLink="/loans/products">Apply Loan</a>
+    </nav>
+
+    <!-- Profile & Actions -->
+    <div class="header-actions">
+      <div class="account-badge" routerLink="/profile" title="View Profile">
+        <div class="acc-text">
+          <span class="label">ACCOUNT NO.</span>
+          <span class="val">{{customer?.accountNo || '-----'}}</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN BODY (Sidebar + Content) -->
+  <div class="main-body-wrapper">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" [class.closed]="!sidebarOpen">
+      <div class="welcome-banner">
+        Welcome back, <br /><strong>{{ customer?.customerName || customer?.username || 'User' }} 👋</strong>
+      </div>
+      <nav class="menu">
+        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Dashboard
+        </a>
+        <a routerLink="/profile" routerLinkActive="active">My Profile
+        </a>
+        <a routerLink="/loans/products" routerLinkActive="active">Apply Loan
+        </a>
+        <a routerLink="/loans/history" routerLinkActive="active">Loan History
+        </a>
+        <a routerLink="/emi-calculator" routerLinkActive="active">EMI Calculator
+        </a>
+        <a routerLink="/emi-center" routerLinkActive="active">EMI Payments
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <a (click)="logout()" class="logout-btn">
+          🚪 Logout
+        </a>
+      </div>
+    </aside>
+
+    <!-- Scrollable Content Area -->
+    <div class="content-wrapper">
+      <main class="content-scroll">
+
+        <!-- 1. Hero / Overview -->
+        <section class="hero-banner" id="overview">
+          <div class="hero-content">
+            <span class="hero-tag">Fast &amp; Easy</span>
+            <h2>Drive Your Dream Vehicle Today</h2>
+            <p>Whether it's a sleek sedan, a powerful bike, or heavy machinery, FinBank offers up to 100% on-road
+              financing with minimal documentation.</p>
+            <div class="hero-actions">
+              <button class="btn-primary" routerLink="/loans/products">Apply Now</button>
+              <button class="btn-secondary" routerLink="/emi-calculator">Calculate EMI</button>
+            </div>
+          </div>
+          <div class="hero-image">
+            <img [src]="heroImages[currentImageIndex]" alt="Financing Vehicle" class="dynamic-hero-img">
+          </div>
+        </section>
+
+        <!-- 2. Financing for All Vehicles -->
+        <section class="vehicles-section" id="vehicles">
+          <div class="vehicles-card-wrapper">
+            <h3 class="section-title">Financing for All Vehicles</h3>
+            <div class="vehicle-grid">
+
+              <!-- Car -->
+              <div class="vehicle-card" [routerLink]="['/loans/apply']" [queryParams]="{ type: 'CAR_LOAN' }">
+                <div class="v-img-placeholder">
+                  <img src="/assets/car-loan.png" alt="Car Loans" class="vehicle-card-img">
+                </div>
+                <div class="v-content">
+                  <h4>Car Loans</h4>
+                  <p>Rates starting at 9.0% p.a.</p>
+                  <span class="link-text">Apply →</span>
+                </div>
+              </div>
+
+              <!-- Bike -->
+              <div class="vehicle-card" [routerLink]="['/loans/apply']" [queryParams]="{ type: 'BIKE_LOAN' }">
+                <div class="v-img-placeholder">
+                  <img src="/assets/bike-loan.png" alt="Two-Wheeler Loans" class="vehicle-card-img">
+                </div>
+                <div class="v-content">
+                  <h4>Two-Wheeler Loans</h4>
+                  <p>Rates starting at 11.5% p.a.</p>
+                  <span class="link-text">Apply →</span>
+                </div>
+              </div>
+
+              <!-- Commercial -->
+              <div class="vehicle-card" [routerLink]="['/loans/apply']"
+                [queryParams]="{ type: 'COMMERCIAL_VEHICLE_LOAN' }">
+                <div class="v-img-placeholder">
+                  <img src="/assets/truck-loan.png" alt="Commercial Vehicles" class="vehicle-card-img">
+                </div>
+                <div class="v-content">
+                  <h4>Commercial Vehicles</h4>
+                  <p>Rates starting at 10.5% p.a.</p>
+                  <span class="link-text">Apply →</span>
+                </div>
+              </div>
+
+              <!-- Used Vehicles -->
+              <div class="vehicle-card" [routerLink]="['/loans/apply']" [queryParams]="{ type: 'USED_VEHICLE_LOAN' }">
+                <div class="v-img-placeholder">
+                  <img src="/assets/car-hero.png" alt="Used Vehicles" class="vehicle-card-img">
+                </div>
+                <div class="v-content">
+                  <h4>Used Vehicle Loans</h4>
+                  <p>Pre-owned financing from 14.0% p.a.</p>
+                  <span class="link-text">Apply →</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Middle Split: Features & Tools -->
+        <div class="split-section">
+
+          <!-- Features & Benefits -->
+          <section class="features-section flex-2" id="features">
+            <h3 class="section-title">Features &amp; Benefits</h3>
+            <div class="features-grid">
+              <div class="feature-item">
+                <div class="icon">⚡</div>
+                <div>
+                  <h5>Instant Approval</h5>
+                  <p>In-principle sanction in just 10 minutes.</p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="icon">📑</div>
+                <div>
+                  <h5>Minimal Documentation</h5>
+                  <p>Simple digital process with basic KYC.</p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="icon">📅</div>
+                <div>
+                  <h5>Flexible Repayment</h5>
+                  <p>Tenures ranging from 12 to 84 months.</p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="icon">💰</div>
+                <div>
+                  <h5>High Funding</h5>
+                  <p>Up to 100% of on-road vehicle price.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Quick Tools -->
+          <section class="tools-section flex-1" id="tools">
+            <h3 class="section-title">Quick Tools</h3>
+            <div class="tools-container">
+              <div class="tool-card ai-assistant" role="button" tabindex="0" (click)="openAiAssistant()"
+                (keydown.enter)="openAiAssistant()">
+                <div class="tool-icon">🤖</div>
+                <div class="tool-text">
+                  <h5>FinBank AI Assistant</h5>
+                  <p>Ask your loan questions &amp; get instant answers.</p>
+                </div>
+                <button type="button" class="icon-btn" (click)="openAiAssistant(); $event.stopPropagation()">→</button>
+              </div>
+              <div class="tool-card emi-calc" routerLink="/emi-calculator">
+                <div class="tool-icon">🧮</div>
+                <div class="tool-text">
+                  <h5>EMI Calculator</h5>
+                  <p>Plan your monthly vehicle payments.</p>
+                </div>
+                <button class="icon-btn">→</button>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+      </main>
+
+      <!-- Footer -->
+      <footer class="portal-footer dark-slate">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <span class="logo">🏦</span>
+            <span class="text">FinBank Corporate Financing</span>
+          </div>
+          <p>&copy; 2026 FinBank. All rights reserved.</p>
+        </div>
+        <div class="footer-links">
+          <a>Terms &amp; Conditions</a>
+          <a>Privacy Policy</a>
+          <a>Contact Support</a>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+
+</div>

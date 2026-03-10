@@ -1,0 +1,89 @@
+<div class="application-container">
+    <div class="form-header">
+        <h2>Complete Your Application</h2>
+        <p>Expertly tailored financing solutions for your next vehicle.</p>
+    </div>
+
+    <div class="application-layout">
+        <div class="form-card">
+            <form [formGroup]="loanForm" (ngSubmit)="onSubmit()">
+                <!-- Loan Type Selection -->
+                <div class="form-group">
+                    <label for="loanType">Preferred Financing Type</label>
+                    <div class="select-wrapper">
+                        <select id="loanType" formControlName="loanType" class="form-control">
+                            <option value="" disabled>Choose a financing category</option>
+                            <option *ngFor="let type of loanTypes" [value]="type.type">
+                                {{ type.label }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="error-msg"
+                        *ngIf="loanForm.get('loanType')?.touched && loanForm.get('loanType')?.invalid">
+                        <span class="icon">⚠️</span> Please select a financing category.
+                    </div>
+                </div>
+
+                <!-- Loan Amount -->
+                <div class="form-group">
+                    <label for="amount">Requested Loan Amount (₹)</label>
+                    <input type="number" id="amount" formControlName="amount" class="form-control"
+                        placeholder="e.g. 500000">
+                    <div class="error-msg" *ngIf="loanForm.get('amount')?.touched && loanForm.get('amount')?.invalid">
+                        <span class="icon">⚠️</span>
+                        <span *ngIf="loanForm.get('amount')?.errors?.['required']">Estimated amount is required.</span>
+                        <span *ngIf="loanForm.get('amount')?.errors?.['min']">Minimum eligibility starts at
+                            ₹10,000.</span>
+                    </div>
+                </div>
+
+                <!-- Tenure Selection -->
+                <div class="form-group">
+                    <label for="tenure">Repayment Tenure (Months)</label>
+                    <input type="number" id="tenure" formControlName="tenure" class="form-control"
+                        placeholder="Between 12 and 84 months">
+                    <div class="error-msg" *ngIf="loanForm.get('tenure')?.touched && loanForm.get('tenure')?.invalid">
+                        <span class="icon">⚠️</span>
+                        <span *ngIf="loanForm.get('tenure')?.errors?.['required']">Please specify the tenure.</span>
+                        <span *ngIf="loanForm.get('tenure')?.errors?.['min']">Minimum tenure allowed is 12
+                            months.</span>
+                        <span *ngIf="loanForm.get('tenure')?.errors?.['max']">Maximum tenure allowed is 84
+                            months.</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <button type="button" class="btn-outline" routerLink="/loans/products">Discard</button>
+                    <button type="submit" class="btn-primary">Review Plans</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Professional Summary Card -->
+        <div class="summary-card" *ngIf="selectedLoanType">
+            <h3>Financing Structure</h3>
+
+            <div class="summary-item">
+                <span class="label">Product Category</span>
+                <span class="value">{{ selectedLoanType.label }}</span>
+            </div>
+
+            <div class="summary-item">
+                <span class="label">Applicable Rate (ROI)</span>
+                <span class="value">{{ selectedLoanType.roi }}% p.a.</span>
+            </div>
+
+            <div class="summary-item highlight">
+                <span class="label">Approximate Monthly EMI</span>
+                <span class="value">₹{{ (loanForm.get('amount')?.value || 0) / (loanForm.get('tenure')?.value || 1) |
+                    number:'1.0-0' }} / mo*</span>
+            </div>
+
+            <p class="disclaimer">
+                *Interest calculation is indicative. Final EMI and processing fees will be confirmed upon credit
+                evaluation and document verification.
+            </p>
+        </div>
+    </div>
+</div>

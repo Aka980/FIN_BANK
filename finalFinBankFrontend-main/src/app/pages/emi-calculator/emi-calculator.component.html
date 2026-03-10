@@ -1,0 +1,67 @@
+<div class="emi-page">
+  <div class="page-header">
+    <h2>EMI Calculator</h2>
+    <p>Enter principal and tenure, then choose loan type. Interest rate is selected automatically.</p>
+  </div>
+
+  <div class="emi-layout">
+    <div class="emi-form-card">
+      <form [formGroup]="emiForm">
+        <div class="form-group">
+          <label for="principalAmount">Principal Amount</label>
+          <input id="principalAmount" type="number" formControlName="principalAmount" class="form-control"
+            placeholder="e.g. 500000">
+          <small class="error"
+            *ngIf="emiForm.get('principalAmount')?.touched && emiForm.get('principalAmount')?.invalid">
+            Principal amount should be at least 10,000.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="tenure">Tenure (Months)</label>
+          <input id="tenure" type="number" formControlName="tenure" class="form-control"
+            placeholder="12 to 360 months">
+          <small class="error" *ngIf="emiForm.get('tenure')?.touched && emiForm.get('tenure')?.invalid">
+            Tenure must be between 12 and 360 months.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="loanType">Loan Type</label>
+          <select id="loanType" formControlName="loanType" class="form-control">
+            <option *ngFor="let type of loanTypes" [value]="type.type">{{ type.label }}</option>
+          </select>
+        </div>
+
+        <div class="auto-roi" *ngIf="selectedLoanType">
+          <span>Auto-selected ROI</span>
+          <strong>{{ selectedLoanType.roi }}% p.a.</strong>
+        </div>
+      </form>
+    </div>
+
+    <div class="emi-summary-card">
+      <h3>Monthly EMI</h3>
+      <div class="emi-amount">&#8377; {{ monthlyEmi | number:'1.0-2' }}</div>
+
+      <div class="summary-item">
+        <span>Principal Amount</span>
+        <strong>&#8377; {{ (emiForm.get('principalAmount')?.value || 0) | number:'1.0-0' }}</strong>
+      </div>
+
+      <div class="summary-item">
+        <span>Total Interest</span>
+        <strong>&#8377; {{ totalInterest | number:'1.0-0' }}</strong>
+      </div>
+
+      <div class="summary-item total">
+        <span>Total Payable</span>
+        <strong>&#8377; {{ totalPayable | number:'1.0-0' }}</strong>
+      </div>
+
+      <button type="button" class="apply-loan-btn" (click)="applyForLoanFromCalculator()" [disabled]="!canApplyForLoan">
+        Apply for this loan
+      </button>
+    </div>
+  </div>
+</div>

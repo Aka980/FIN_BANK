@@ -1,0 +1,34 @@
+# ======================
+# ANGULAR / NODE
+# ======================
+node_modules/
+.angular/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ======================
+# SPRING BOOT / MAVEN
+# ======================
+target/
+*.class
+*.log
+
+# ======================
+# ECLIPSE FILES
+# ======================
+.project
+.classpath
+.settings/
+
+# ======================
+# VS CODE
+# ======================
+.vscode/
+
+# ======================
+# OS FILES
+# ======================
+.DS_Store
+Thumbs.db

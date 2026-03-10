@@ -1,0 +1,270 @@
+<div class="profile-layout">
+
+    <!-- FIXED TOP HEADER -->
+    <header class="profile-header">
+        <div class="header-brand-section">
+            <div class="brand">
+                <span class="logo">🏦</span>
+                <span class="title">FinBank</span>
+            </div>
+        </div>
+
+        <nav class="header-nav">
+            <a routerLink="/dashboard">Overview</a>
+            <a routerLink="/loans/apply">Apply Loan</a>
+            <a routerLink="/emi-calculator">EMI Calculator</a>
+            <a routerLink="/profile" class="nav-active">My Profile</a>
+        </nav>
+
+        <div class="header-actions">
+            <button class="back-btn" routerLink="/dashboard">
+                ← Back to Dashboard
+            </button>
+        </div>
+    </header>
+
+    <!-- PAGE BODY -->
+    <div class="profile-body">
+
+        <!-- Toast Notification -->
+        <div *ngIf="toastMessage" class="profile-toast" [class.toast-success]="toastType === 'success'"
+            [class.toast-error]="toastType === 'error'">
+            <span>{{ toastMessage }}</span>
+        </div>
+
+        <!-- Left: Profile Summary Panel -->
+        <aside class="profile-sidebar">
+
+            <!-- Avatar Card -->
+            <div class="avatar-card">
+                <div class="avatar-circle">
+                    {{ customer?.customerName ? customer.customerName.charAt(0).toUpperCase() : 'U' }}
+                </div>
+                <h3 class="avatar-name">{{ customer?.customerName || 'User' }}</h3>
+                <p class="avatar-email">{{ customer?.email || 'No email on file' }}</p>
+                <span class="kyc-badge" [class.verified]="profileExists" [class.pending]="!profileExists">
+                    {{ profileExists ? '✓ KYC Verified' : '⏳ KYC Pending' }}
+                </span>
+            </div>
+
+            <!-- Quick Info List -->
+            <div class="sidebar-info-list">
+                <div class="sidebar-info-item">
+                    <span class="si-label">Account No.</span>
+                    <span class="si-value">{{ customer?.accountNo || '—' }}</span>
+                </div>
+                <div class="sidebar-info-item">
+                    <span class="si-label">Phone</span>
+                    <span class="si-value">{{ customer?.phone || '—' }}</span>
+                </div>
+                <div class="sidebar-info-item">
+                    <span class="si-label">Member Since</span>
+                    <span class="si-value">{{ (customer?.createdDate | date:'mediumDate') || '—' }}</span>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <nav class="sidebar-links">
+                <a routerLink="/loans/apply" class="sidebar-link-btn">📝 Apply for Loan</a>
+                <a routerLink="/emi-calculator" class="sidebar-link-btn">🧮 EMI Calculator</a>
+            </nav>
+
+        </aside>
+
+        <!-- Right: Main Content -->
+        <main class="profile-content">
+
+            <!-- Page Title -->
+            <div class="page-title-row">
+                <div>
+                    <h1 class="page-title">Customer Profile</h1>
+                    <p class="page-subtitle">Manage your personal information and KYC details.</p>
+                </div>
+            </div>
+
+            <!-- Account Info Card (VIEW ONLY) -->
+            <div class="profile-card">
+                <div class="card-header-row">
+                    <div class="card-icon-wrap">🆔</div>
+                    <div class="card-header-text">
+                        <h2 class="card-title">Account Information</h2>
+                        <p class="card-subtitle">Your registered banking account details</p>
+                    </div>
+                </div>
+
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span class="data-label">Full Name</span>
+                        <span class="data-value">{{ customer?.customerName || 'N/A' }}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Username</span>
+                        <span class="data-value">{{ customer?.username || 'N/A' }}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Account Number</span>
+                        <span class="data-value mono">{{ customer?.accountNo || 'Pending KYC' }}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Email Address</span>
+                        <span class="data-value">{{ customer?.email || 'N/A' }}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Phone Number</span>
+                        <span class="data-value">{{ customer?.phone || 'N/A' }}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Member Since</span>
+                        <span class="data-value">{{ (customer?.createdDate | date:'mediumDate') || 'N/A' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KYC DETAILS CARD -->
+            <div *ngIf="profileExists && !editMode" class="profile-card kyc-card">
+                <div class="card-header-row">
+                    <div class="card-icon-wrap">✅</div>
+                    <div class="card-header-text">
+                        <h2 class="card-title">KYC Details</h2>
+                        <p class="card-subtitle">Your identity verification on file</p>
+                    </div>
+                    <span class="status-pill verified">KYC Verified</span>
+                </div>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span class="data-label">PAN Number</span>
+                        <span class="data-value mono">{{ kyc?.pan }}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Date of Birth</span>
+                        <span class="data-value">{{ kyc?.dob | date:'mediumDate' }}</span>
+                    </div>
+                    <div class="data-item full-width">
+                        <span class="data-label">Address</span>
+                        <span class="data-value">{{ kyc?.address }}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Branch IFSC</span>
+                        <span class="data-value mono">{{ kyc?.ifsc }}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Annual Income</span>
+                        <span class="data-value">₹{{ kyc?.annualIncome | number }}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Occupation</span>
+                        <span class="data-value">{{ kyc?.occupation }}</span>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-edit" (click)="editMode=true">✏️ Edit KYC Details</button>
+                </div>
+            </div>
+
+            <!-- KYC FORM -->
+            <div *ngIf="!profileExists" class="profile-card kyc-card">
+                <div class="card-header-row">
+                    <div class="card-icon-wrap pending">📝</div>
+                    <div>
+                        <h2 class="card-title">Complete KYC</h2>
+                        <p class="card-subtitle">Fill out the details below to activate your account.</p>
+                    </div>
+                    <span class="status-pill pending">KYC Pending</span>
+                </div>
+
+                <form (ngSubmit)="createProfile()" #kycForm="ngForm" class="kyc-form">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>PAN Number</label>
+                            <input placeholder="e.g. ABCDE1234F" [(ngModel)]="kyc.pan" name="pan" required
+                                pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}">
+                        </div>
+                        <div class="input-group">
+                            <label>Date of Birth</label>
+                            <input type="date" [(ngModel)]="kyc.dob" name="dob" required>
+                        </div>
+                        <div class="input-group full-width">
+                            <label>Residential Address</label>
+                            <input placeholder="Full residential address" [(ngModel)]="kyc.address" name="address"
+                                required>
+                        </div>
+                        <div class="input-group">
+                            <label>Branch IFSC Code</label>
+                            <select [(ngModel)]="kyc.ifsc" name="ifsc" required>
+                                <option value="" disabled selected>Select a branch</option>
+                                <option value="FINBANKKAR001">FINBANKKAR001 (Karnataka)</option>
+                                <option value="FINBANKHYD001">FINBANKHYD001 (Hyderabad)</option>
+                                <option value="FINBANKCHE001">FINBANKCHE001 (Chennai)</option>
+                                <option value="FINBANKMUM001">FINBANKMUM001 (Mumbai)</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Annual Income</label>
+                            <input type="number" placeholder="₹" [(ngModel)]="kyc.annualIncome" name="income" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Occupation</label>
+                            <input placeholder="Job title / Profession" [(ngModel)]="kyc.occupation" name="occupation"
+                                required>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button type="submit" [disabled]="!kycForm.form.valid" class="btn-submit">Create
+                            Profile</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- EDIT KYC FORM -->
+            <div *ngIf="editMode" class="profile-card kyc-card">
+                <div class="card-header-row">
+                    <div class="card-icon-wrap">✏️</div>
+                    <div>
+                        <h2 class="card-title">Update KYC Details</h2>
+                        <p class="card-subtitle">Update your identity verification information.</p>
+                    </div>
+                </div>
+
+                <form (ngSubmit)="updateProfile()" #updateForm="ngForm" class="kyc-form">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>PAN Number</label>
+                            <input [(ngModel)]="kyc.pan" name="pan" required pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}">
+                        </div>
+                        <div class="input-group">
+                            <label>Date of Birth</label>
+                            <input type="date" [(ngModel)]="kyc.dob" name="dob" required>
+                        </div>
+                        <div class="input-group full-width">
+                            <label>Residential Address</label>
+                            <input [(ngModel)]="kyc.address" name="address" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Branch IFSC Code</label>
+                            <select [(ngModel)]="kyc.ifsc" name="ifsc" required>
+                                <option value="FINBANKKAR001">FINBANKKAR001 (Karnataka)</option>
+                                <option value="FINBANKHYD001">FINBANKHYD001 (Hyderabad)</option>
+                                <option value="FINBANKCHE001">FINBANKCHE001 (Chennai)</option>
+                                <option value="FINBANKMUM001">FINBANKMUM001 (Mumbai)</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Annual Income</label>
+                            <input type="number" [(ngModel)]="kyc.annualIncome" name="income" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Occupation</label>
+                            <input [(ngModel)]="kyc.occupation" name="occupation" required>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button type="button" (click)="editMode=false" class="btn-cancel">Cancel</button>
+                        <button type="submit" [disabled]="!updateForm.form.valid" class="btn-submit">Save
+                            Changes</button>
+                    </div>
+                </form>
+            </div>
+
+        </main>
+    </div>
+</div>

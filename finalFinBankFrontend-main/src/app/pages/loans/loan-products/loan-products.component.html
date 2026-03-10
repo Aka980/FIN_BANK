@@ -1,0 +1,29 @@
+<div class="products-page-container">
+    <div class="products-header">
+        <button class="btn-back" routerLink="/dashboard">← Back to Dashboard</button>
+        <h2>Explore a range of services from FinBank</h2>
+        <p class="brand-description">
+            As a leading digital banking platform, we provide financial solutions that match your needs and help you
+            build a better future. Our services are trusted by millions of customers across the nation.
+        </p>
+    </div>
+
+    <section class="vehicles-section">
+        <div class="vehicles-card-wrapper">
+            <h3 class="section-title">Financing for All Vehicles</h3>
+            <div class="vehicle-grid">
+                <div class="vehicle-card" *ngFor="let product of loanProducts" [routerLink]="['/loans/apply']"
+                    [queryParams]="{ type: product.type }">
+                    <div class="v-img-placeholder">
+                        <img [src]="getProductImage(product.type)" [alt]="product.label" class="vehicle-card-img">
+                    </div>
+                    <div class="v-content">
+                        <h4>{{ product.label }}</h4>
+                        <p>Rates starting at {{ product.roi }}% p.a.</p>
+                        <span class="link-text">Apply →</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

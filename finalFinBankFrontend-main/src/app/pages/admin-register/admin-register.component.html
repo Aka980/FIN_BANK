@@ -1,0 +1,111 @@
+<div class="container">
+  <div class="left">
+    <div class="logo">FinBank</div>
+
+    <h1>
+      Admin Access
+      <br>
+      Registration
+    </h1>
+
+    <p>
+      Create an administrator account to manage loan operations, customer verification, and approvals.
+    </p>
+
+    <div class="stats">
+      <div>
+        <h3>Secure</h3>
+        <p>Role-Based Access</p>
+      </div>
+      <div>
+        <h3>Fast</h3>
+        <p>Loan Decisions</p>
+      </div>
+      <div>
+        <h3>Trusted</h3>
+        <p>Admin Console</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="form-shell">
+      <div class="card-header">
+        <h2>Create Admin Account</h2>
+        <p>Register using admin credentials</p>
+      </div>
+
+      <form (ngSubmit)="registerAdmin()" #adminRegisterForm="ngForm" *ngIf="!successMessage">
+        <div class="input-group">
+          <label for="adminFullName">FULL NAME</label>
+          <input
+            id="adminFullName"
+            name="fullName"
+            placeholder="Enter admin full name"
+            [(ngModel)]="adminData.fullName"
+            required
+            minlength="3">
+        </div>
+
+        <div class="input-group">
+          <label for="adminUsername">USERNAME</label>
+          <input
+            id="adminUsername"
+            name="username"
+            placeholder="Enter admin username"
+            [(ngModel)]="adminData.username"
+            required
+            minlength="3">
+        </div>
+
+        <div class="input-group">
+          <label for="adminPassword">PASSWORD</label>
+          <input
+            id="adminPassword"
+            type="password"
+            name="password"
+            placeholder="********"
+            [(ngModel)]="adminData.password"
+            required
+            minlength="6">
+        </div>
+
+        <div class="input-group">
+          <label for="confirmPassword">CONFIRM PASSWORD</label>
+          <input
+            id="confirmPassword"
+            type="password"
+            name="confirmPassword"
+            placeholder="********"
+            [(ngModel)]="confirmPassword"
+            required>
+        </div>
+
+        <div *ngIf="errorMessage" class="inline-error-box">
+          <span class="error-icon">!</span>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <button
+          type="submit"
+          class="full-width submit-btn"
+          [disabled]="!adminRegisterForm.form.valid || submitting">
+          {{ submitting ? 'Registering...' : 'Register Admin ->' }}
+        </button>
+
+        <p class="link-row">
+          Already registered? <a routerLink="/">Login here</a>
+        </p>
+      </form>
+
+      <div class="success-card" *ngIf="successMessage">
+        <div class="success-icon">&#10003;</div>
+        <h3>Registration Successful</h3>
+        <p>{{ successMessage }}</p>
+        <button type="button" class="full-width submit-btn" (click)="goToLogin()">
+          Go To Login ->
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

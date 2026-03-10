@@ -1,0 +1,14 @@
+<section class="payment-success-page">
+  <article class="success-card">
+    <div class="success-icon">&#10003;</div>
+    <h2>Payment Successful!</h2>
+    <p>
+      Your payment of &#8377; {{ amountPaid | number:'1.0-0' }} has been received.
+      Transaction ID: <strong>#{{ transactionId }}</strong>
+    </p>
+
+    <button type="button" class="return-btn" (click)="returnToDashboard()">
+      Return to Dashboard
+    </button>
+  </article>
+</section>

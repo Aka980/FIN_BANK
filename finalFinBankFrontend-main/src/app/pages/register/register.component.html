@@ -1,0 +1,168 @@
+<div class="container">
+
+    <div class="left">
+
+        <div class="logo">
+            FinBank
+        </div>
+
+        <h1>
+            Secure. Simple.
+            <br>
+            Smart Banking.
+        </h1>
+
+        <p>
+            Join thousands of users who trust FinBank for their
+            financial management.
+            Experience the future of banking today.
+        </p>
+
+        <div class="stats">
+
+            <div>
+                <h3>2M+</h3>
+                <p>Active Users</p>
+            </div>
+
+            <div>
+                <h3>99.9%</h3>
+                <p>Uptime</p>
+            </div>
+
+            <div>
+                <h3>24/7</h3>
+                <p>Support</p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="right">
+
+        <!-- Initial Registration Form -->
+        <ng-container *ngIf="!registrationSuccess">
+            <h2 style="display:none;">Create your account</h2>
+
+            <div class="role-toggle-container">
+                <div class="role-toggle">
+                    <button type="button" [class.active]="accountType === 'Customer'"
+                        (click)="accountType = 'Customer'">Customer</button>
+                    <button type="button" [class.active]="accountType === 'Admin'"
+                        (click)="goToAdminRegistration()">Administrator</button>
+                </div>
+            </div>
+
+            <form (ngSubmit)="register()" #registerForm="ngForm">
+
+                <div class="input-group">
+                    <label for="fullName">FULL NAME</label>
+                    <input id="fullName" placeholder="e.g. John Doe" [(ngModel)]="customer.customerName"
+                        name="customerName" required minlength="3">
+                </div>
+
+                <div class="grid-row form-row">
+                    <div class="input-group">
+                        <label for="regUsername">USERNAME</label>
+                        <input id="regUsername" placeholder="johndoe" [(ngModel)]="customer.username" name="username"
+                            required (ngModelChange)="errorMessage = ''">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="phone">PHONE NUMBER</label>
+                        <input id="phone" placeholder="+1 (555) 000-0000" [(ngModel)]="customer.phone" name="phone"
+                            required pattern="[0-9]{10}">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">EMAIL ADDRESS</label>
+                    <input id="email" type="email" placeholder="name&#64;company.com" [(ngModel)]="customer.email"
+                        name="email" required email>
+                </div>
+
+                <div class="grid-row form-row">
+                    <div class="input-group">
+                        <label for="regPassword">PASSWORD</label>
+                        <input id="regPassword" type="password" placeholder="••••••••" [(ngModel)]="customer.password"
+                            name="password" required minlength="6">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="confirmPassword">CONFIRM PASSWORD</label>
+                        <input id="confirmPassword" type="password" placeholder="••••••••" [(ngModel)]="confirmPassword"
+                            name="confirmPassword" required>
+                    </div>
+                </div>
+
+                <div *ngIf="customer.password && confirmPassword && customer.password !== confirmPassword"
+                    style="color: #ef4444; font-size: 0.8rem; margin-top: -0.5rem; margin-bottom: 1rem; font-weight: 600;">
+                    ⚠ Passwords do not match
+                </div>
+
+                <div class="terms-group mt-4">
+                    <input type="checkbox" id="terms" required ngModel name="terms">
+                    <label for="terms" class="text-small text-subtle">I agree to the <a href="#">Terms of Service</a>
+                        and <a href="#">Privacy Policy</a></label>
+                </div>
+
+                <!-- Inline error message (replaces browser alert popup) -->
+                <div *ngIf="errorMessage" class="inline-error-box">
+                    <span class="error-icon">⚠</span>
+                    <span>{{ errorMessage }}</span>
+                </div>
+
+                <button type="submit" [disabled]="!registerForm.form.valid || customer.password !== confirmPassword"
+                    class="spacer-lg full-width submit-btn">
+                    Create Account
+                </button>
+
+                <p class="link mt-4" style="text-align: center;">
+                    Already have an account? <a routerLink="/">Sign in here</a>
+                </p>
+
+            </form>
+        </ng-container>
+
+        <!-- Success View -->
+        <ng-container *ngIf="registrationSuccess">
+            <div class="success-card text-center fade-in">
+                <div class="success-icon"
+                    style="font-size: 3rem; color: #10b981; margin-bottom: 1rem; background: #ecfdf5; width: 6rem; height: 6rem; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; margin-left: auto; margin-right: auto;">
+                    ✓</div>
+                <h2 style="color: #1e293b;">Registration Complete!</h2>
+                <p class="text-subtle">Welcome to FinBank. Your premium account has been successfully created.</p>
+
+                <!-- Simplified Success Box -->
+                <div class="account-number-box mt-4 mb-4"
+                    style="padding: 2rem; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; margin: 2rem 0; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+
+                    <ng-container *ngIf="newAccountNumber !== 'Check Email'">
+                        <span class="label"
+                            style="display: block; font-size: 0.75rem; font-weight: 700; color: #64748b; letter-spacing: 0.05em; margin-bottom: 0.5rem; text-transform: uppercase;">YOUR
+                            ACCOUNT NUMBER</span>
+                        <div class="large-value"
+                            style="font-size: 2.25rem; font-weight: 800; color: #4f46e5; font-family: 'Inter', monospace; letter-spacing: 1px;">
+                            {{newAccountNumber}}</div>
+                    </ng-container>
+
+                    <p class="text-small" style="color: #1e293b; font-weight: 600; margin-top: 1rem; font-size: 1rem;">
+                        📧 A welcome email has been sent to your registered address with your account details.
+                    </p>
+                    <p class="text-subtle mt-2" style="font-size: 0.85rem;">Please check your inbox (and spam folder)
+                        for further instructions.</p>
+                </div>
+
+                <button routerLink="/" class="full-width submit-btn">
+                    → Login to Dashboard
+                </button>
+                <p class="link mt-4">
+                    <a routerLink="/">Return to Home</a>
+                </p>
+            </div>
+        </ng-container>
+
+    </div>
+
+</div>

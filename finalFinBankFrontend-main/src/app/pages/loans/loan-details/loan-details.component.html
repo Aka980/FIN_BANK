@@ -1,0 +1,89 @@
+<div class="details-container">
+    <div class="details-header">
+        <button class="back-link" routerLink="/loans/history">← Back to History</button>
+        <div class="header-main">
+            <h2>Loan Application Details</h2>
+            <div class="status-pill" *ngIf="loan" [ngClass]="getStatusClass(loan.status)">{{ loan.status }}</div>
+        </div>
+    </div>
+
+    <div class="loading-state" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Loading application details...</p>
+    </div>
+
+    <div class="success-banner" *ngIf="successMessage">
+        <div class="icon">✅</div>
+        <p>{{ successMessage }}</p>
+    </div>
+
+    <div class="error-state" *ngIf="error">
+        <div class="icon">❌</div>
+        <p>{{ error }}</p>
+        <button class="btn-primary" routerLink="/loans/history">Go Back</button>
+    </div>
+
+    <div class="details-grid" *ngIf="!loading && !error && loan">
+        <div class="main-details">
+            <div class="detail-card">
+                <h3>Basic Information</h3>
+                <div class="data-row">
+                    <span class="label">Application No</span>
+                    <span class="value">#{{ loan.applicationNo }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="label">Account No</span>
+                    <span class="value">{{ loan.accountNo }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="label">Application Date</span>
+                    <span class="value">{{ loan.applicationDate | date:'fullDate' }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="label">PAN Details</span>
+                    <span class="value">{{ loan.pan || 'Not Provided' }}</span>
+                </div>
+            </div>
+
+            <div class="detail-card">
+                <h3>Vehicle Financing Details</h3>
+                <div class="data-row">
+                    <span class="label">Loan Type</span>
+                    <span class="value">{{ loanTypeInfo?.label }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="label">Applied Amount</span>
+                    <span class="value">₹{{ loan.amount | number }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="label">Chosen Tenure</span>
+                    <span class="value">{{ loan.tenure }} Months</span>
+                </div>
+                <div class="data-row">
+                    <span class="label">Interest Rate (ROI)</span>
+                    <span class="value">{{ loan.roi }}% p.a.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="side-details">
+            <div class="action-card">
+                <h3>Quick Actions</h3>
+                <button class="btn-outline w-100" *ngIf="loan.status === 'PENDING'" (click)="onCancelLoan()">Cancel
+                    Application</button>
+                <button class="btn-primary w-100" [routerLink]="['/ai-assistant']">
+    Contact Support
+</button>
+                <button class="btn-secondary w-100" [routerLink]="['/loans/status-tracking']"
+                    [state]="{ loan: loan }">Track Status</button>
+            </div>
+
+            <div class="info-card">
+                <h3>Support Info</h3>
+                <p>For any queries regarding this application, please call our 24/7 helpline at
+                    <strong>1800-FIN-BANK</strong> or email us at <strong>loans&#64;finbank.com</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

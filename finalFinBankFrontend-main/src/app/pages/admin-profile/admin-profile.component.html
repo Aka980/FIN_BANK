@@ -1,0 +1,141 @@
+<div class="profile-layout">
+    <!-- FIXED TOP HEADER -->
+    <header class="profile-header">
+        <div class="header-brand-section">
+            <div class="brand">
+                <span class="logo">🏦</span>
+                <span class="title">FinBank</span>
+            </div>
+        </div>
+
+        <nav class="header-nav">
+            <a href="/admin/dashboard#overview">Overview</a>
+            <a href="/admin/dashboard#loans">Loan Decisions</a>
+            <a href="/admin/dashboard#customers">Customer Lookup</a>
+            <a routerLink="/admin/profile" class="nav-active">View My Profile</a>
+        </nav>
+
+        <div class="header-actions">
+            <button class="back-btn" (click)="logout()">
+                🚪 Logout
+            </button>
+        </div>
+    </header>
+
+    <!-- PAGE BODY -->
+    <div class="profile-body">
+
+        <!-- Left Sidebar -->
+        <aside class="profile-sidebar">
+            <!-- Avatar Card -->
+            <div class="avatar-card">
+                <div class="avatar-circle">
+                    {{ adminUsername.charAt(0).toUpperCase() }}
+                </div>
+                <h3 class="avatar-name">{{ adminUsername }}</h3>
+                <p class="avatar-email">Administrative Access</p>
+                <span class="kyc-badge verified">
+                    ✓ System Authorized
+                </span>
+            </div>
+
+            <!-- Quick Info List -->
+            <div class="sidebar-info-list">
+                <div class="sidebar-info-item">
+                    <span class="si-label">Role</span>
+                    <span class="si-value">{{ adminProfile.role }}</span>
+                </div>
+                <div class="sidebar-info-item">
+                    <span class="si-label">Member Since</span>
+                    <span class="si-value">Mar 2026</span>
+                </div>
+                <div class="sidebar-info-item">
+                    <span class="si-label">Service Health</span>
+                    <span class="si-value" [class.status-unhealthy-text]="pingStatus === 'unhealthy'"
+                        [class.status-healthy-text]="pingStatus === 'healthy'">
+                        {{ adminProfile.serviceStatus }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <nav class="sidebar-links">
+                <a href="/admin/dashboard#overview" class="sidebar-link-btn">📊 Dashboard Overview</a>
+                <a href="/admin/dashboard#loans" class="sidebar-link-btn">📉 Loan Management</a>
+            </nav>
+        </aside>
+
+        <!-- Right Main Content -->
+        <main class="profile-content">
+            <div class="page-title-row">
+                <div>
+                    <h1 class="page-title">Admin Profile</h1>
+                    <p class="page-subtitle">Security settings and system access overview.</p>
+                </div>
+            </div>
+
+            <div class="profile-card high-contrast-card kyc-card">
+                <div class="card-header-row">
+                    <div class="card-icon-wrap">🛡️</div>
+                    <div class="card-header-text">
+                        <h2 class="card-title">Account Information</h2>
+                        <p class="card-subtitle">Your organizational credentials and permissions</p>
+                    </div>
+                    <span class="status-pill verified">Active Session</span>
+                </div>
+
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span class="data-label">Username</span>
+                        <span class="data-value">{{ adminProfile.username || 'System Admin' }}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Assigned Role</span>
+                        <span class="data-value">{{ adminProfile.role }}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Authorized Scope</span>
+                        <span class="data-value">{{ adminProfile.authScope }}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Service Health</span>
+                        <span class="data-value" [class.status-unhealthy-text]="pingStatus === 'unhealthy'"
+                            [class.status-healthy-text]="pingStatus === 'healthy'">
+                            {{ adminProfile.serviceStatus }}
+                        </span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Email Address</span>
+                        <span class="data-value">admin&#64;finbank.com</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Access Level</span>
+                        <span class="data-value">Level 4 (Global)</span>
+                    </div>
+                </div>
+
+                <div class="card-actions" *ngIf="pingMessage && pingStatus === 'unhealthy'">
+                    <div class="health-alert error">
+                        ⚠️ {{ pingMessage }}
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="portal-footer dark-slate">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <span class="logo">🏦</span>
+                <span class="text">FinBank Corporate Financing</span>
+            </div>
+            <p>&copy; 2026 FinBank. All rights reserved.</p>
+        </div>
+        <div class="footer-links">
+            <a>Terms &amp; Conditions</a>
+            <a>Privacy Policy</a>
+            <a>Contact Support</a>
+        </div>
+    </footer>
+</div>

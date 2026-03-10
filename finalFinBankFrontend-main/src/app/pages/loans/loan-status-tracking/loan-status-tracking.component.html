@@ -1,0 +1,52 @@
+<div class="tracking-container" *ngIf="loan">
+    <div class="tracking-header">
+        <div class="confirmation-badge" *ngIf="getCurrentStageIndex() === 0">🎉 Application Submitted!</div>
+        <h2>Application Tracking</h2>
+        <p>Application No: <strong>#{{ loan.applicationNo }}</strong></p>
+    </div>
+
+    <div class="tracking-card">
+        <div class="status-summary">
+            <div class="summary-item">
+                <span class="label">Loan Type</span>
+                <h3>{{ loanTypeInfo?.label }}</h3>
+            </div>
+            <div class="summary-item">
+                <span class="label">Amount</span>
+                <h3>₹{{ loan.amount | number }}</h3>
+            </div>
+            <div class="summary-item status">
+                <span class="label">Current Status</span>
+                <span class="status-pill big" [ngClass]="'status-' + loan.status.toLowerCase()">{{ loan.status }}</span>
+            </div>
+        </div>
+
+        <div class="stepper"
+            *ngIf="loan.status.toUpperCase() !== 'REJECTED' && loan.status.toUpperCase() !== 'CANCELLED'">
+            <div class="step" *ngFor="let stage of stages; let i = index" [class.completed]="isStageCompleted(i)"
+                [class.active]="isStageActive(i)">
+                <div class="step-icon">{{ isStageCompleted(i) ? '✓' : stage.icon }}</div>
+                <div class="step-content">
+                    <div class="step-label">{{ stage.label }}</div>
+                    <div class="step-status">{{ isStageCompleted(i) ? 'Completed' : (isStageActive(i) ? 'In Progress' :
+                        'Pending') }}</div>
+                </div>
+                <div class="step-line" *ngIf="i < stages.length - 1"></div>
+            </div>
+        </div>
+
+        <div class="rejection-box" *ngIf="loan.status.toUpperCase() === 'REJECTED'">
+            <div class="icon">⚠️</div>
+            <div class="content">
+                <h3>Application Rejected</h3>
+                <p>Unfortunately, your application did not meet our criteria at this time. Please contact support for
+                    more details.</p>
+            </div>
+        </div>
+
+        <div class="tracking-footer">
+            <button class="btn-outline" routerLink="/loans/history">View Loan History</button>
+            <button class="btn-primary" routerLink="/dashboard">Back to Dashboard</button>
+        </div>
+    </div>
+</div>

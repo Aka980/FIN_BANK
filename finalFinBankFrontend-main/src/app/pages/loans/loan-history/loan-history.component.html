@@ -1,0 +1,62 @@
+<div class="history-header">
+    <h2>Loan History</h2>
+    <p>Track and manage all your vehicle loan applications.</p>
+</div>
+
+<div class="table-card">
+    <div class="table-loading" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Fetching loan records...</p>
+    </div>
+
+    <div class="table-error" *ngIf="error">
+        {{ error }}
+        <button (click)="fetchLoans()">Retry</button>
+    </div>
+
+    <div class="table-success" *ngIf="successMessage">
+        {{ successMessage }}
+    </div>
+
+    <div class="table-empty" *ngIf="!loading && !error && loans.length === 0">
+        <div class="empty-icon">📁</div>
+        <h3>No applications found</h3>
+        <p>You haven't applied for any loans yet.</p>
+        <button class="btn-primary" routerLink="/loans/apply">Apply Now</button>
+    </div>
+
+    <table *ngIf="!loading && !error && loans.length > 0">
+        <thead>
+            <tr>
+                <th>Application #</th>
+                <th>Loan Type</th>
+                <th>Amount</th>
+                <th>Tenure</th>
+                <th>ROI</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let loan of loans">
+                <td><strong>#{{ loan.applicationNo }}</strong></td>
+                <td>{{ getLoanLabel(loan.loanType) }}</td>
+                <td>₹{{ loan.amount | number }}</td>
+                <td>{{ loan.tenure }} Mo</td>
+                <td>{{ loan.roi }}%</td>
+                <td>{{ loan.applicationDate | date:'mediumDate' }}</td>
+                <td>
+                    <span class="status-pill" [ngClass]="getStatusClass(loan.status)">
+                        {{ loan.status }}
+                    </span>
+                </td>
+                <td class="actions-cell">
+                    <button class="view-btn" [routerLink]="['/loans/details', loan.applicationNo]">View Details</button>
+                    <button class="cancel-btn" *ngIf="loan.status === 'PENDING'"
+                        (click)="onCancelLoan(loan.applicationNo)">Cancel</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

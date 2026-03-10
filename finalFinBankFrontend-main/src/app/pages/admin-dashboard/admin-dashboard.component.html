@@ -1,0 +1,261 @@
+<div class="portal-layout">
+  <header class="global-top-header">
+    <div class="header-brand-section">
+      <button class="hamburger-toggle" (click)="toggleSidebar()" aria-label="Toggle menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <div class="brand">
+        <span class="logo">🏦</span>
+        <span class="title">FinBank</span>
+
+      </div>
+    </div>
+
+    <nav class="global-nav hidden-mobile">
+      <a href="/admin/dashboard#overview">Overview</a>
+      <a href="/admin/dashboard#loans">Loan Decisions</a>
+      <a href="/admin/dashboard#customers">Customer Lookup</a>
+      <a (click)="goToAdminProfile()" style="cursor: pointer;">Admin Profile</a>
+    </nav>
+
+    <div class="header-actions">
+      <a class="admin-badge" title="View Admin Profile" (click)="goToAdminProfile()" style="cursor: pointer;">
+        {{ adminUsername }}
+      </a>
+    </div>
+  </header>
+
+  <div class="main-body-wrapper" [class.sidebar-collapsed]="!sidebarOpen">
+    <aside class="sidebar" [class.closed]="!sidebarOpen">
+      <div class="welcome-banner">
+        Welcome back, <br />
+        <strong>
+          {{ adminUsername }}
+          <img src="/assets/wave-emoji.svg" alt="Waving hand" class="welcome-emoji-img">
+        </strong>
+      </div>
+      <nav class="menu">
+        <a href="/admin/dashboard#overview">Dashboard Overview</a>
+        <a href="/admin/dashboard#loans">Loan Management</a>
+        <a href="/admin/dashboard#customers">Customer Profile</a>
+        <a (click)="goToAdminProfile()" style="cursor: pointer;">Admin Profile</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button type="button" class="logout-btn" (click)="logout()">Logout</button>
+      </div>
+    </aside>
+
+    <div class="content-wrapper">
+      <main class="content-scroll">
+        <section class="hero-banner" id="overview">
+          <div class="hero-content">
+            <span class="hero-tag">Admin Command Center</span>
+            <h2>Loan Decision Management</h2>
+            <p>
+              Manage the full loan decision lifecycle with a clear, audit-friendly workspace. Review applications,
+              resolve exceptions, and access customer profiles quickly to deliver faster and more consistent decisions.
+            </p>
+          </div>
+          <div class="hero-image">
+            <img src="/assets/hero-section.png" alt="FinBank admin operations" class="dynamic-hero-img">
+          </div>
+        </section>
+
+        <section class="stats-grid">
+          <article class="stat-card" role="button" tabindex="0" [class.active-filter]="selectedStatus === 'ALL'"
+            (click)="setStatusFilter('ALL')" (keydown.enter)="setStatusFilter('ALL')">
+            <span class="label">Total Applications</span>
+            <span class="value">{{ stats.total }}</span>
+          </article>
+          <article class="stat-card card-pending" role="button" tabindex="0"
+            [class.active-filter]="selectedStatus === 'PENDING'" (click)="setStatusFilter('PENDING')"
+            (keydown.enter)="setStatusFilter('PENDING')">
+            <span class="label">Pending</span>
+            <span class="value">{{ stats.pending }}</span>
+          </article>
+          <article class="stat-card card-approved" role="button" tabindex="0"
+            [class.active-filter]="selectedStatus === 'APPROVED'" (click)="setStatusFilter('APPROVED')"
+            (keydown.enter)="setStatusFilter('APPROVED')">
+            <span class="label">Approved</span>
+            <span class="value">{{ stats.approved }}</span>
+          </article>
+          <article class="stat-card card-denied" role="button" tabindex="0"
+            [class.active-filter]="selectedStatus === 'DENIED'" (click)="setStatusFilter('DENIED')"
+            (keydown.enter)="setStatusFilter('DENIED')">
+            <span class="label">Denied</span>
+            <span class="value">{{ stats.denied }}</span>
+          </article>
+          <article class="stat-card card-abeyance" role="button" tabindex="0"
+            [class.active-filter]="selectedStatus === 'ABEYANCE'" (click)="setStatusFilter('ABEYANCE')"
+            (keydown.enter)="setStatusFilter('ABEYANCE')">
+            <span class="label">In Abeyance</span>
+            <span class="value">{{ stats.abeyance }}</span>
+          </article>
+          <!-- <article class="stat-card">
+            <span class="label">Portfolio Amount</span>
+            <span class="value">{{ formatCurrency(stats.totalAmount) }}</span>
+          </article> -->
+        </section>
+
+        <section class="panel loans-panel" id="loans">
+          <div class="section-head">
+            <h3>Loan Decision Queue</h3>
+            <div class="filters">
+              <input type="text" [ngModel]="accountNoFilter" (ngModelChange)="onAccountNoFilterChange($event)"
+                inputmode="numeric" placeholder="Filter by account no">
+              <select [ngModel]="selectedStatus" (ngModelChange)="onStatusChange($event)">
+                <option *ngFor="let status of statusFilters" [ngValue]="status">{{ status }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div *ngIf="actionError" class="alert error">{{ actionError }}</div>
+          <div *ngIf="actionSuccess" class="alert success">{{ actionSuccess }}</div>
+
+          <div *ngIf="loadingLoans" class="empty-state">Loading loan applications...</div>
+          <div *ngIf="!loadingLoans && filteredLoans.length === 0" class="empty-state">
+            No applications match the current filters.
+          </div>
+
+          <div *ngIf="!loadingLoans && filteredLoans.length > 0" class="table-shell">
+            <table>
+              <thead>
+                <tr>
+                  <th>Application</th>
+                  <th>Account</th>
+                  <th>Loan Type</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Tenure</th>
+                  <th>Rate</th>
+                  <th>Applied On</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let loan of pagedLoans; trackBy: trackByLoan">
+                  <td>{{ loan.applicationNo }}</td>
+                  <td>
+                    <button type="button" class="account-link" (click)="viewCustomerProfile(loan.accountNo)">
+                      {{ loan.accountNo }}
+                    </button>
+                  </td>
+                  <td>{{ loan.loanType }}</td>
+                  <td>{{ formatCurrency(loan.amount) }}</td>
+                  <td>
+                    <span class="status-badge" [ngClass]="'status-' + (loan.status || '').toLowerCase()">
+                      {{ loan.status }}
+                    </span>
+                  </td>
+                  <td>{{ loan.tenure }} months</td>
+                  <td>{{ loan.roi }}%</td>
+                  <td>{{ loan.applicationDate | date: 'mediumDate' }}</td>
+                  <td>
+                    <div class="action-group">
+                      <button type="button" class="btn-action approve-btn"
+                        [disabled]="isProcessing(loan.applicationNo) || isLoanDenied(loan)" (click)="approveLoan(loan)">
+                        Approve
+                      </button>
+                      <button type="button" class="btn-action abeyance-btn"
+                        [disabled]="isProcessing(loan.applicationNo) || isLoanDenied(loan)"
+                        (click)="abeyanceLoan(loan)">
+                        Abeyance
+                      </button>
+                      <div class="deny-box">
+                        <input type="text" [(ngModel)]="denyReasonByLoan[loan.applicationNo]" placeholder="Deny reason">
+                        <button type="button" class="btn-action deny-btn" [disabled]="isProcessing(loan.applicationNo)"
+                          (click)="denyLoan(loan)">
+                          Deny
+                        </button>
+                      </div>
+                      <button type="button" class="btn-action delete-emi-btn"
+                        [disabled]="loan.status !== 'DENIED' || isProcessing(loan.applicationNo)"
+                        (click)="deleteLoanEmi(loan)">
+                        Delete EMI
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination-bar" *ngIf="!loadingLoans && filteredLoans.length > 0">
+            <span class="pagination-summary">
+              Showing {{ pageStartItem }} - {{ pageEndItem }} of {{ filteredLoans.length }} applications
+            </span>
+            <div class="pagination-actions">
+              <button type="button" class="page-btn" (click)="goToPreviousPage()" [disabled]="!canGoPrevious">
+                Previous
+              </button>
+              <span class="page-indicator">Page {{ currentPage }} / {{ totalPages }}</span>
+              <button type="button" class="page-btn" (click)="goToNextPage()" [disabled]="!canGoNext">
+                Next
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel customer-panel" id="customers">
+          <div class="section-head">
+            <h3>Customer Profile Lookup</h3>
+          </div>
+
+          <div class="center-lookup-wrapper">
+            <form class="lookup-form" (ngSubmit)="lookupCustomerProfile()">
+              <div class="lookup-input-group">
+                <input type="number" name="accountNo" [(ngModel)]="customerLookupAccountNo"
+                  placeholder="Enter account number">
+                <button type="submit" class="btn-primary" [disabled]="customerLookupLoading">
+                  {{ customerLookupLoading ? 'Fetching...' : 'Fetch Profile' }}
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div *ngIf="customerLookupError" class="alert error">{{ customerLookupError }}</div>
+
+          <div *ngIf="customerProfile" class="profile-card">
+            <div class="profile-row">
+              <span>Account Number</span>
+              <strong>{{ customerProfile.accountNo }}</strong>
+            </div>
+            <div class="profile-row">
+              <span>Name</span>
+              <strong>{{ customerProfile.name }}</strong>
+            </div>
+            <div class="profile-row">
+              <span>PAN</span>
+              <strong>{{ customerProfile.pan }}</strong>
+            </div>
+            <div class="profile-row">
+              <span>Annual Income</span>
+              <strong>{{ formatCurrencyInr(customerProfile.income) }}</strong>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <footer class="portal-footer dark-slate">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <span class="logo">🏦</span>
+            <span class="text">FinBank Corporate Financing</span>
+          </div>
+          <p>&copy; 2026 FinBank. All rights reserved.</p>
+        </div>
+        <div class="footer-links">
+          <a>Terms &amp; Conditions</a>
+          <a>Privacy Policy</a>
+          <a>Contact Support</a>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

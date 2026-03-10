@@ -1,0 +1,63 @@
+<section class="assistant-page">
+  <header class="assistant-header">
+    <div>
+      <h2>FinBank AI Assistant</h2>
+      <p>Get loan and EMI insights directly from the backend AI service.</p>
+    </div>
+    <button type="button" class="back-btn" routerLink="/dashboard">Back to Dashboard</button>
+  </header>
+
+  <div class="assistant-card">
+    <div class="top-controls">
+      <div class="loan-selector">
+        <label for="loanSelect">Select Loan</label>
+        <select id="loanSelect" [ngModel]="selectedLoanId" (ngModelChange)="onLoanChange($event)"
+          [disabled]="loadingLoans || loans.length === 0 || sending || generatingSummary">
+          <option [ngValue]="null" disabled>Select loan ID</option>
+          <option *ngFor="let loan of loans" [ngValue]="loan.applicationNo">
+            Loan #{{ loan.applicationNo }} | {{ loan.loanType }} | &#8377;{{ loan.amount | number }}
+          </option>
+        </select>
+      </div>
+
+      <button type="button" class="summary-btn" (click)="requestLoanSummary()"
+        [disabled]="selectedLoanId === null || sending || generatingSummary || loadingLoans">
+        {{ generatingSummary ? 'Generating...' : 'Get Loan Summary' }}
+      </button>
+    </div>
+
+    <p class="status" [class.warning]="infoMessage.includes('unavailable')">{{ infoMessage }}</p>
+    <p class="status warning" *ngIf="loadingLoans">Loading customer loans...</p>
+    <p class="status warning" *ngIf="!loadingLoans && loans.length === 0">
+      No loans found for this customer. AI assistance works per loan.
+    </p>
+    <p class="status error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <div class="chat-box">
+      <div class="empty-state" *ngIf="messages.length === 0">
+        Ask: "What is my outstanding amount?", "When is my next EMI due?", or "Explain my loan status."
+      </div>
+
+      <article class="chat-message" *ngFor="let message of messages"
+        [class.user]="message.role === 'user'"
+        [class.assistant]="message.role === 'assistant'"
+        [class.system]="message.role === 'system'">
+        <p>{{ message.text }}</p>
+      </article>
+
+      <article class="chat-message assistant" *ngIf="sending">
+        <p>FinBank AI is typing...</p>
+      </article>
+    </div>
+
+    <div class="composer">
+      <textarea [(ngModel)]="prompt" rows="3" placeholder="Type your question about this loan..."
+        (keydown.enter)="onPromptEnter($event)" [disabled]="sending || loadingLoans || selectedLoanId === null">
+      </textarea>
+      <button type="button" class="send-btn" (click)="sendPrompt()"
+        [disabled]="sending || !prompt.trim() || selectedLoanId === null || loadingLoans">
+        {{ sending ? 'Sending...' : 'Send to AI' }}
+      </button>
+    </div>
+  </div>
+</section>

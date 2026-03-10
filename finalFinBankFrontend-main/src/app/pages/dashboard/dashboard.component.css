@@ -1,0 +1,931 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+/* Global Smooth Scrolling to fix exact positioning when anchored */
+html,
+body {
+    scroll-behavior: smooth;
+}
+
+:host {
+    display: block;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #1e293b;
+}
+
+.portal-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: #f1f5f9;
+    overflow-x: hidden;
+    width: 100vw;
+    max-width: 100%;
+}
+
+/* ========================================== GLOBAL TOP HEADER ========================================== */
+.global-top-header {
+    height: 70px;
+    background-color: #060529;
+    background-image: linear-gradient(135deg, rgba(35, 35, 44, 0.9) 0%, rgba(99, 102, 241, 0.85) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1100;
+    /* Higher than sidebar for mobile toggle access */
+}
+
+/* Brand Section (Hamburger + Logo) */
+.header-brand-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 260px;
+    /* Aligns with sidebar */
+}
+
+.hamburger-toggle {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.hamburger-toggle:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+/* Ensure hamburger is visible on mobile even if something else hides it */
+@media (max-width: 768px) {
+    .hamburger-toggle {
+        display: flex !important;
+        position: relative;
+        z-index: 1200;
+        color: #ffffff !important;
+    }
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand .logo {
+    font-size: 1.5rem;
+}
+
+.brand .title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+}
+
+/* Central Navigation Links */
+.global-nav {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    overflow-x: auto;
+    white-space: nowrap;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    flex: 1;
+    justify-content: center;
+}
+
+.global-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.global-nav a {
+    text-decoration: none;
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+}
+
+/* White background + blue text on hover/active for nav links */
+.global-nav a:hover,
+.global-nav a.active {
+    background: #ffffff;
+    color: #4f46e5;
+}
+
+/* Profile & Actions */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.account-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.4rem 0.6rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.account-badge:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.acc-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.acc-text .label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #cbd5e1;
+    letter-spacing: 0.5px;
+}
+
+.acc-text .val {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #4f46e5;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* ========================================== MAIN BODY & SIDEBAR ========================================== */
+.main-body-wrapper {
+    display: flex;
+    margin-top: 70px;
+    /* Offset for global header */
+    height: calc(100vh - 70px);
+}
+
+.sidebar {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    bottom: 0;
+    width: 260px;
+    background-color: #060529;
+    background-image: linear-gradient(180deg, rgba(35, 35, 44, 0.9) 0%, rgba(99, 102, 241, 0.85) 100%);
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 900;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 1px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.closed {
+    transform: translateX(-100%);
+}
+
+.welcome-banner {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: transparent;
+    font-size: 0.9rem;
+    color: #e2e8f0;
+}
+
+.welcome-banner strong {
+    color: #ffffff;
+    font-size: 1.1rem;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+.menu {
+    flex-grow: 1;
+    padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    overflow-y: auto;
+}
+
+.menu a {
+    padding: 0.875rem 1.5rem;
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    border-left: 4px solid transparent;
+}
+
+.menu a .icon {
+    font-size: 1.25rem;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.menu a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.menu a:hover .icon {
+    opacity: 1;
+}
+
+.menu a.active {
+    background: rgba(99, 102, 241, 0.2);
+    color: #ffffff;
+    border-left-color: #818cf8;
+    font-weight: 600;
+}
+
+.menu a.active .icon {
+    opacity: 1;
+    color: #818cf8;
+}
+
+.sidebar-footer {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    padding: 0.7rem 1.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    background: #dc2626;
+    border: none;
+    letter-spacing: 0.3px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.logout-btn:hover {
+    background: #b91c1c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+}
+
+/* ========================================== CONTENT WRAPPER ========================================== */
+.content-wrapper {
+    flex: 1;
+    margin-left: 260px;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+.sidebar.closed~.content-wrapper {
+    margin-left: 0;
+}
+
+.content-scroll {
+    flex-grow: 1;
+    padding: 2.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Add anchor padding to prevent header overlap when anchored */
+section {
+    scroll-margin-top: 90px;
+}
+
+.section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* 1. Hero Banner */
+.hero-banner {
+    display: flex;
+    background: linear-gradient(135deg, #3e3c5a 0%, #25367a 100%);
+    /* Vibrant Teal to Emerald */
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.2);
+    /* Matching shadow tint */
+}
+
+.hero-content {
+    flex: 1;
+    padding: 3.5rem 3rem;
+    color: white;
+}
+
+.hero-tag {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.hero-content h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 0 0 1rem 0;
+    color: #ffffff;
+}
+
+.hero-content p {
+    font-size: 1.05rem;
+    opacity: 0.9;
+    max-width: 90%;
+    line-height: 1.5;
+    margin: 0 0 2rem 0;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-primary {
+    background: #ffffff;
+    color: #7d206d;
+    /* Match the new teal/emerald banner */
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    background: #f0fdf4;
+    /* Emerald tint on hover */
+}
+
+.btn-secondary {
+    background: transparent;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #ffffff;
+}
+
+.hero-image {
+    flex: 0.8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.dynamic-hero-img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.3));
+    animation: fadeInImage 0.5s ease-in-out;
+}
+
+@keyframes fadeInImage {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 2. Vehicles Grid */
+.vehicles-section {
+    margin-bottom: 3.5rem;
+}
+
+.vehicles-card-wrapper {
+    background: linear-gradient(135deg, #3e3c5a 0%, #25367a 100%);
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    border: none;
+}
+
+.vehicles-card-wrapper .section-title {
+    color: #e2e8f0;
+    letter-spacing: 1px;
+}
+
+.vehicle-grid {
+    display: grid;
+    /* 2x2 layout for the 4 vehicle types */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+/* Maintain 2 columns until mobile breakpoint */
+@media (max-width: 1100px) {
+    .vehicle-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 650px) {
+    .vehicle-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.vehicle-card {
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    border: none;
+    border-top: 4px solid #6366f1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+/* TEAL accent border specifically for EV/Green cards */
+.vehicle-card.teal-accent {
+    border-top: 4px solid #0d9488;
+}
+
+.vehicle-card:hover {
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
+    transform: translateY(-3px);
+}
+
+.v-img-placeholder {
+    height: 170px;
+    background: #f1f5f9;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+}
+
+.vehicle-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.vehicle-card:hover .vehicle-card-img {
+    transform: scale(1.06);
+}
+
+.car-img {
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+}
+
+.bike-img {
+    background: linear-gradient(135deg, #ffffff, #cbd5e1);
+}
+
+.truck-img {
+    background: linear-gradient(135deg, #f1f5f9, #94a3b8);
+}
+
+.ev-img {
+    background: linear-gradient(135deg, #f0fdf4, #bbf7d0);
+}
+
+.agri-img {
+    background: linear-gradient(135deg, #fefce8, #fef08a);
+}
+
+.construction-img {
+    background: linear-gradient(135deg, #fff7ed, #fdba74);
+}
+
+.v-content {
+    padding: 1.25rem;
+    background: #ffffff;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.v-content h4 {
+    margin: 0 0 0.4rem 0;
+    font-size: 1.15rem;
+    color: #1e1b4b;
+    font-weight: 700;
+}
+
+.v-content p {
+    margin: 0 0 1.25rem 0;
+    font-size: 0.9rem;
+    color: #4338ca;
+    font-weight: 500;
+}
+
+.link-text {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #4f46e5;
+    padding: 0.4rem 0.8rem;
+    background: #f1f5f9;
+    border-radius: 4px;
+    display: inline-block;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s;
+    margin-top: auto;
+    align-self: flex-start;
+}
+
+.vehicle-card:hover .link-text {
+    background: #4f46e5;
+    color: #ffffff;
+    border-color: #4f46e5;
+}
+
+.vehicle-card.teal-accent:hover .link-text {
+    background: #0d9488;
+    color: #ffffff;
+    border-color: #0d9488;
+}
+
+.vehicle-card.teal-accent .link-text {
+    color: #0d9488;
+}
+
+/* Split Section (Features & Tools) */
+.split-section {
+    display: flex;
+    gap: 2.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.flex-2 {
+    flex: 2;
+    min-width: 450px;
+}
+
+.flex-1 {
+    flex: 1;
+    min-width: 320px;
+    max-width: 100%;
+}
+
+/* Add matching master-wrapper styles specifically to the Tools section */
+.tools-section {
+    background: linear-gradient(135deg, #3e3c5a 0%, #25367a 100%);
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 8px 24px rgba(37, 54, 122, 0.3);
+    border: none;
+}
+
+.tools-section .section-title {
+    color: #e0e7ff;
+    margin-bottom: 2rem;
+    letter-spacing: 1px;
+}
+
+@media (max-width: 850px) {
+    .flex-2 {
+        min-width: 100%;
+    }
+}
+
+/* 3. Features & Benefits */
+.features-section {
+    background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+    /* Primary blue gradient */
+    border-radius: 12px;
+    padding: 2.5rem;
+    color: #ffffff;
+    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+}
+
+.features-section .section-title {
+    color: #ffffff;
+    margin-bottom: 2rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+@media (max-width: 1050px) {
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.feature-item {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    /* Slightly softer radius inside the gradient */
+    border: none;
+    /* Remove slate border inside the gradient container */
+    border-left: 4px solid #4f46e5;
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.feature-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    background: #f8fafc;
+    border-left-color: #3730a3;
+}
+
+.feature-item .icon {
+    font-size: 1.4rem;
+    line-height: 1;
+    background: #e0e7ff;
+    padding: 0.75rem;
+    border-radius: 4px;
+    color: #4f46e5;
+    border: 1px solid #c7d2fe;
+}
+
+.feature-item h5 {
+    margin: 0 0 0.35rem 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1e1b4b;
+}
+
+.feature-item p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #374151;
+    line-height: 1.5;
+}
+
+/* 4. Quick Tools */
+.tools-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.tool-card {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tool-card:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.ai-assistant .tool-icon,
+.emi-calc .tool-icon {
+    background: rgba(99, 102, 241, 0.35);
+    color: #c7d2fe;
+    border: 1px solid rgba(165, 180, 252, 0.4);
+}
+
+.tool-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.tool-text {
+    flex: 1;
+}
+
+.tool-text h5 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1rem;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.tool-text p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.icon-btn {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    color: #64748b;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tool-card:hover .icon-btn {
+    background: rgba(255, 255, 255, 0.95);
+    color: #0d9488;
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+/* ========================================== FOOTER (Professional Slate Blue) ========================================== */
+.dark-slate {
+    background: #14376d;
+    /* Lightened from the very dark #0f172a to a softer mid-slate */
+    color: #cbd5e1;
+    /* Brought text color up slightly for Better contrast on the new background */
+    padding: 3rem;
+    border-top: 4px solid #4f46e5;
+    /* Primary bold line on top */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.footer-content p {
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+.footer-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.footer-links a {
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.2s;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.footer-links a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+/* ========================================== RESPONSIVE DESIGN OVERRIDES ========================================== */
+@media (max-width: 1024px) {
+    .hidden-tablet {
+        display: none !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .hidden-mobile {
+        display: none !important;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+        z-index: 1050;
+        top: 70px;
+        /* Stay below header */
+        height: calc(100vh - 70px);
+    }
+
+    .sidebar:not(.closed) {
+        transform: translateX(0);
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .content-wrapper {
+        margin-left: 0;
+    }
+
+    .global-top-header {
+        padding: 0 1rem;
+    }
+
+    .header-brand-section {
+        width: auto;
+    }
+
+    .content-scroll {
+        padding: 1.5rem;
+    }
+
+    .dark-slate {
+        flex-direction: column;
+        gap: 2rem;
+        align-items: flex-start;
+        padding: 2rem;
+    }
+
+    .footer-links {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}

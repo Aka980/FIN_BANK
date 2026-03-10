@@ -1,0 +1,58 @@
+<div class="review-container">
+    <div class="review-header">
+        <button class="back-link" routerLink="/loans/apply">← Back to Form</button>
+        <h2>Review Your Application</h2>
+        <p>Please double-check your loan details before submitting.</p>
+    </div>
+
+    <div class="review-card" *ngIf="application">
+        <div class="review-section">
+            <h3>Vehicle & Loan Details</h3>
+            <div class="data-grid">
+                <div class="data-item">
+                    <span class="label">Loan Type</span>
+                    <span class="value">{{ loanTypeInfo?.label }}</span>
+                </div>
+                <div class="data-item">
+                    <span class="label">Interest Rate</span>
+                    <span class="value">{{ loanTypeInfo?.roi }}% p.a.</span>
+                </div>
+                <div class="data-item">
+                    <span class="label">Loan Amount</span>
+                    <span class="value">₹{{ application.amount | number }}</span>
+                </div>
+                <div class="data-item">
+                    <span class="label">Tenure</span>
+                    <span class="value">{{ application.tenure }} Months</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="review-section">
+            <h3>Financial Summary</h3>
+            <div class="summary-box">
+                <div class="summary-row">
+                    <span>Principal Amount</span>
+                    <span>₹{{ application.amount | number }}</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total Interest (Est.)</span>
+                    <span>₹{{ (application.amount * (loanTypeInfo?.roi || 0) / 100 * (application.tenure / 12)) |
+                        number:'1.0-0' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="error-alert" *ngIf="error">
+            {{ error }}
+        </div>
+
+        <div class="review-actions">
+            <button class="btn-primary" [disabled]="submitting" (click)='confirmAndSubmit()'>
+                {{ submitting ? 'Submitting Application...' : 'Confirm and Submit Application' }}
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,67 @@
+<div class="manage-layout">
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>Purge Rejected Application</h1>
+                <p class="subtitle">Securely remove denied loan data from the system</p>
+            </div>
+
+            <div *ngIf="loading" class="state-msg">
+                <div class="spinner"></div>
+                <p>Fetching application details...</p>
+            </div>
+
+            <div *ngIf="error" class="error-box">
+                <span class="icon">⚠️</span>
+                <div class="msg-content">
+                    <h3>Action Blocked</h3>
+                    <p>{{ error }}</p>
+                </div>
+                <button (click)="goBack()" class="btn-outline">Back to Dashboard</button>
+            </div>
+
+            <div *ngIf="success" class="success-box">
+                <span class="icon">✅</span>
+                <div class="msg-content">
+                    <h3>Successful Purge</h3>
+                    <p>{{ success }}</p>
+                    <p class="redirect-note">Returning to dashboard in 2 seconds...</p>
+                </div>
+            </div>
+
+            <div *ngIf="loan && !success && !error" class="content">
+                <div class="alert warn">
+                    <strong>Caution:</strong> Deleting this record will permanently remove the application profile and
+                    any associated EMI history from all database services.
+                </div>
+
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <label>Application #</label>
+                        <span>{{ loan.applicationNo }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Account #</label>
+                        <span>{{ loan.accountNo }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Amount</label>
+                        <span>₹{{ loan.amount | number:'1.2-2' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Status</label>
+                        <span class="badge denied">{{ loan.status }}</span>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button (click)="goBack()" class="btn-secondary" [disabled]="deleting">Cancel</button>
+                    <button (click)="deletePermanently()" class="btn-danger" [disabled]="deleting">
+                        <span *ngIf="deleting" class="spinner-small"></span>
+                        {{ deleting ? 'Purging Records...' : 'Delete Permanently' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
